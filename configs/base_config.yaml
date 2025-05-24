@@ -1,0 +1,157 @@
+# Synthetic Plastic Transformer Configuration
+
+# Model Architecture
+model:
+  type: "PolymerPropertyPredictor"
+  input_dim: 128
+  hidden_dim: 512
+  depth: 12
+  heads: 8
+  dim_head: 64
+  mlp_dim: 2048
+  dropout: 0.1
+  num_fiber_types: 8
+  
+  # Pre-trained model path (for transfer learning)
+  pretrained_model_path: null  # Set to path of protein folding model
+  
+  # Properties to predict
+  target_properties:
+    - tensile_strength
+    - elastic_modulus
+    - thermal_conductivity
+    - glass_transition_temp
+    - water_absorption
+    - biodegradability
+    - uv_resistance
+    - dielectric_constant
+
+# Training Configuration
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  epochs: 100
+  warmup_epochs: 5
+  gradient_clip_val: 1.0
+  
+  # Learning rate schedule
+  scheduler:
+    type: "cosine"
+    min_lr: 0.00001
+    
+  # Early stopping
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+    monitor: "val_loss"
+    
+  # Loss weights for multi-task learning
+  loss_weights:
+    tensile_strength: 1.0
+    elastic_modulus: 1.0
+    thermal_conductivity: 0.8
+    glass_transition_temp: 0.8
+    water_absorption: 0.6
+    biodegradability: 0.6
+    uv_resistance: 0.5
+    dielectric_constant: 0.5
+    mixture_ratios: 1.5
+
+# Data Configuration
+data:
+  # Data paths
+  polymer_dataset: "data/polymers/pi1m_processed.csv"
+  fiber_dataset: "data/fibers/gots_certified_fibers.csv"
+  composite_dataset: "data/composites/fiber_composites.csv"
+  
+  # Data splits
+  train_split: 0.7
+  val_split: 0.15
+  test_split: 0.15
+  
+  # Data augmentation
+  augmentation:
+    enabled: true
+    noise_level: 0.01
+    target_noise: 0.02
+    
+  # Preprocessing
+  preprocessing:
+    normalize_features: true
+    handle_missing: "interpolate"
+    
+# GOTS Compliance Configuration
+gots:
+  enforce_compliance: true
+  min_organic_content: 0.70
+  max_processing_temp: 150
+  allowed_chemicals:
+    - hydrogen_peroxide
+    - citric_acid
+    - natural_enzymes
+    
+# Optimization Configuration
+optimization:
+  algorithm: "genetic"  # Options: genetic, bayesian, grid
+  population_size: 100
+  generations: 50
+  mutation_rate: 0.1
+  crossover_rate: 0.8
+  
+  # Objectives
+  objectives:
+    maximize:
+      - tensile_strength
+      - biodegradability
+    minimize:
+      - cost
+      - water_consumption
+    target:
+      elastic_modulus: 2.5  # GPa
+
+# Evaluation Metrics
+evaluation:
+  metrics:
+    - mae
+    - rmse
+    - r2
+    - mape
+  
+  # Property-specific thresholds
+  thresholds:
+    tensile_strength: 5.0  # MPa
+    elastic_modulus: 0.2   # GPa
+    thermal_conductivity: 0.02  # W/mK
+    water_absorption: 0.5  # %
+
+# Explainability Configuration
+explainability:
+  method: "shap"  # Options: shap, lime, attention_weights
+  num_samples: 1000
+  background_samples: 100
+
+# Logging and Checkpointing
+logging:
+  level: "INFO"
+  log_dir: "logs"
+  tensorboard: true
+  
+checkpointing:
+  save_dir: "checkpoints"
+  save_top_k: 3
+  save_last: true
+  
+# Hardware Configuration
+hardware:
+  device: "cuda"  # Options: cuda, cpu, mps
+  num_workers: 4
+  pin_memory: true
+  mixed_precision: true
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  max_requests: 100
+  timeout: 30 
