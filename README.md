@@ -5,6 +5,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![GOTS Compliant](https://img.shields.io/badge/GOTS-Compliant-green.svg)](https://global-standard.org/)
+[![CI Pipeline](https://github.com/yourusername/synthetic-plastic-transformer/workflows/CI%20Pipeline/badge.svg)](https://github.com/yourusername/synthetic-plastic-transformer/actions)
+[![CD Pipeline](https://github.com/yourusername/synthetic-plastic-transformer/workflows/CD%20Pipeline/badge.svg)](https://github.com/yourusername/synthetic-plastic-transformer/actions)
+[![Code Coverage](https://codecov.io/gh/yourusername/synthetic-plastic-transformer/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/synthetic-plastic-transformer)
+[![Docker Image](https://img.shields.io/badge/docker-available-blue.svg)](https://github.com/yourusername/synthetic-plastic-transformer/pkgs/container/synthetic-plastic-transformer)
 
 ## Overview
 
@@ -47,11 +51,26 @@ synthetic-plastic-transformer/
 
 ## Installation
 
+### Quick Start with Docker (Recommended)
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/synthetic-plastic-transformer.git
 cd synthetic-plastic-transformer
 
+# Start the complete development environment
+docker-compose up -d
+
+# Access services:
+# - API: http://localhost:8000
+# - Jupyter Lab: http://localhost:8888
+# - Flower (Celery): http://localhost:5555
+# - Grafana: http://localhost:3000
+```
+
+### Local Development Setup
+
+```bash
 # Create virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
@@ -64,6 +83,19 @@ pip install torch-scatter torch-sparse torch-geometric -f https://data.pyg.org/w
 
 # Install in development mode
 pip install -e .
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+### Production Deployment
+
+```bash
+# Deploy to production
+./scripts/deploy.sh production
+
+# Or deploy to staging first
+./scripts/deploy.sh staging
 ```
 
 ## Quick Start
@@ -273,23 +305,118 @@ result = engine.optimize_blend(
 
 See [API Documentation](docs/api.md) for detailed API reference.
 
-## Testing
+## Development & Testing
+
+### Running Tests
 
 ```bash
-# Run all tests
+# Run all tests locally
 pytest
 
-# Run specific test suite
-pytest tests/unit/test_quantum_descriptors.py
-pytest tests/unit/test_graph_neural_network.py
+# Run specific test suites
+pytest tests/unit/
+pytest tests/integration/
 
 # Run with coverage
-pytest --cov=synthetic_plastic_transformer tests/
+pytest --cov=src tests/
+
+# Run tests in Docker
+docker-compose exec app pytest tests/
+```
+
+### Code Quality
+
+```bash
+# Format code
+black src/ tests/
+isort src/ tests/
+
+# Run linting
+flake8 src/ tests/
+
+# Type checking
+mypy src/
+
+# Security scanning
+bandit -r src/
+
+# Run all pre-commit hooks
+pre-commit run --all-files
+```
+
+### CI/CD Pipeline
+
+The project includes a comprehensive CI/CD pipeline with GitHub Actions:
+
+- **Continuous Integration**: Automated testing, linting, and security checks
+- **Continuous Deployment**: Automated building and deployment to staging/production
+- **Multi-platform Testing**: Ubuntu, Windows, and macOS
+- **Multi-version Testing**: Python 3.8, 3.9, 3.10, 3.11
+- **Docker Image Building**: Multi-stage builds for development and production
+- **Documentation Deployment**: Automated deployment to GitHub Pages
+
+### Monitoring & Observability
+
+```bash
+# View application metrics (Prometheus)
+open http://localhost:9090
+
+# View dashboards (Grafana)
+open http://localhost:3000
+
+# Monitor Celery tasks (Flower)
+open http://localhost:5555
+
+# View application logs
+docker-compose logs -f api
 ```
 
 ## Contributing
 
 We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+### Development Workflow
+
+1. Fork the repository and create a feature branch
+2. Install pre-commit hooks: `pre-commit install`
+3. Make your changes and ensure tests pass
+4. Run code quality checks: `pre-commit run --all-files`
+5. Submit a pull request
+
+The CI/CD pipeline will automatically:
+- Run tests across multiple Python versions and platforms
+- Check code quality and security
+- Build Docker images
+- Deploy to staging environment for review
+
+## Deployment
+
+### Quick Deployment
+
+```bash
+# Development environment
+docker-compose up -d
+
+# Staging deployment
+./scripts/deploy.sh staging
+
+# Production deployment
+./scripts/deploy.sh production
+```
+
+### Production Infrastructure
+
+The production deployment includes:
+
+- **Load Balancer**: Nginx with SSL termination
+- **Application**: FastAPI with Gunicorn workers
+- **Database**: PostgreSQL with automated backups
+- **Caching**: Redis for session and result caching
+- **Task Queue**: Celery with Redis broker
+- **Monitoring**: Prometheus + Grafana stack
+- **Documentation**: Automated deployment to GitHub Pages
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## License
 
