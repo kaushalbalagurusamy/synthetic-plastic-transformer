@@ -1,0 +1,173 @@
+site_name: Synthetic Plastic Transformer
+site_description: A materials discovery engine for replacing synthetic polymers with organic natural fibers
+site_author: Your Name
+site_url: https://yourusername.github.io/synthetic-plastic-transformer
+
+repo_name: yourusername/synthetic-plastic-transformer
+repo_url: https://github.com/yourusername/synthetic-plastic-transformer
+edit_uri: ""
+
+copyright: Copyright &copy; 2024 Your Name
+
+theme:
+  name: material
+  language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: green
+      accent: light green
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: green
+      accent: light green
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.prune
+    - navigation.indexes
+    - toc.follow
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - search.share
+    - header.autohide
+    - content.code.annotate
+    - content.code.copy
+    - content.tooltips
+
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/leaf
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yourusername/synthetic-plastic-transformer
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/synthetic-plastic-transformer/
+    - icon: fontawesome/brands/docker
+      link: https://github.com/yourusername/synthetic-plastic-transformer/pkgs/container/synthetic-plastic-transformer
+
+  version:
+    provider: mike
+
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            members_order: source
+            show_root_heading: true
+            show_source: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:materialx.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: yourusername
+      repo: synthetic-plastic-transformer
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quickstart.md
+    - Configuration: getting-started/configuration.md
+  - User Guide:
+    - Overview: user-guide/overview.md
+    - Material Discovery: user-guide/material-discovery.md
+    - Model Training: user-guide/training.md
+    - Evaluation: user-guide/evaluation.md
+    - API Usage: user-guide/api.md
+  - Architecture:
+    - System Design: architecture/system-design.md
+    - Graph Neural Networks: architecture/gnn.md
+    - Quantum Descriptors: architecture/quantum.md
+    - Transfer Learning: architecture/transfer-learning.md
+  - Data:
+    - Datasets: data/datasets.md
+    - Natural Fibers: data/natural-fibers.md
+    - GOTS Compliance: data/gots-compliance.md
+  - API Reference:
+    - Core Models: api/models.md
+    - Data Utilities: api/data.md
+    - Preprocessing: api/preprocessing.md
+    - Utils: api/utils.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Development Setup: development/setup.md
+    - Testing: development/testing.md
+    - Code Style: development/code-style.md
+  - Deployment:
+    - Docker: deployment/docker.md
+    - Production: deployment/production.md
+    - Monitoring: deployment/monitoring.md
+  - Tutorials:
+    - Basic Usage: tutorials/basic-usage.md
+    - Advanced Features: tutorials/advanced-features.md
+    - Custom Models: tutorials/custom-models.md
+  - FAQ: faq.md
+  - Changelog: changelog.md 
