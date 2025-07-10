@@ -1,18 +1,17 @@
 # Git
-.git
+.git/
 .gitignore
-README.md
 .gitattributes
 
 # CI/CD
 .github/
-.travis.yml
 .gitlab-ci.yml
+.travis.yml
 
-# Documentation
-docs/
-*.md
-!README.md
+# Documentation build artifacts
+docs/_build/
+docs/.doctrees/
+site/
 
 # Python
 __pycache__/
@@ -124,29 +123,125 @@ Thumbs.db
 
 # Project specific
 logs/
-models/*.pth
-models/*.pkl
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-experiments/
-wandb/
-.wandb/
+*.log
+*.out
+*.err
 
-# Temporary files
-*.tmp
-*.temp
-temp/
-tmp/
-
-# Large datasets
+# ML/Data - large files
+data/raw/large_datasets/
+data/processed/cache/
+models/checkpoints/
+models/pretrained/
 *.h5
 *.hdf5
-*.csv
-!data/sample.csv
+*.pkl
+*.pth
+*.ckpt
+*.safetensors
+runs/
+mlruns/
+tensorboard_logs/
 
-# Weights and models
-*.weights
-*.model
-checkpoints/ 
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# Conda
+.conda/
+conda-meta/
+
+# Testing artifacts
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Docker files (don't include in build context)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# DevContainer (we want to include this)
+!.devcontainer/
+
+# Security
+*.pem
+*.key
+*.crt
+*.csr
+.secrets/
+.credentials/
+
+# Large files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Monitoring data
+prometheus_data/
+grafana_data/
+
+# Temporary/experimental
+experiments/
+scratch/
+sandbox/
+
+# Package managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache
+.cache/
+*.cache
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# VS Code (but keep .devcontainer)
+.vscode/
+!.devcontainer/
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Claude/Cursor specific (keep in container)
+!.claude/
+!.cursor/ 

@@ -1,0 +1,220 @@
+version: '3.8'
+
+services:
+  # Development container with Claude Code CLI
+  devcontainer:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: spt-devcontainer
+    hostname: spt-dev
+    volumes:
+      # Mount entire project
+      - .:/home/developer/workspace:cached
+      
+      # Persist installed packages
+      - python_packages:/usr/local/lib/python3.10/site-packages
+      - conda_packages:/opt/conda/pkgs
+      
+      # Persist ML model cache
+      - torch_cache:/home/developer/.cache/torch
+      - huggingface_cache:/home/developer/.cache/huggingface
+      
+      # Persist command history
+      - zsh_history:/home/developer/.zsh_history
+      
+      # Development tools config
+      - vscode_server:/home/developer/.vscode-server
+      
+      # Jupyter config and notebooks
+      - jupyter_config:/home/developer/.jupyter
+      
+      # Git credentials (from host)
+      - ~/.gitconfig:/home/developer/.gitconfig:ro
+      - ~/.ssh:/home/developer/.ssh:ro
+      
+      # Claude config (from host)
+      - ~/.claude:/home/developer/.claude:cached
+      
+      # Docker socket for docker-in-docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+    environment:
+      # Development environment
+      ENVIRONMENT: development
+      PYTHONPATH: /home/developer/workspace/src
+      
+      # Database connections
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/spt_db
+      REDIS_URL: redis://redis:6379/0
+      
+      # ML/GPU settings
+      CUDA_VISIBLE_DEVICES: ${CUDA_VISIBLE_DEVICES:-0}
+      TORCH_HOME: /home/developer/.cache/torch
+      TRANSFORMERS_CACHE: /home/developer/.cache/huggingface
+      
+      # API settings
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      
+      # Jupyter settings
+      JUPYTER_ENABLE_LAB: "yes"
+      
+      # Git settings (pass through from host)
+      GIT_AUTHOR_NAME: ${GIT_AUTHOR_NAME}
+      GIT_AUTHOR_EMAIL: ${GIT_AUTHOR_EMAIL}
+      GIT_COMMITTER_NAME: ${GIT_COMMITTER_NAME}
+      GIT_COMMITTER_EMAIL: ${GIT_COMMITTER_EMAIL}
+      
+      # Claude/Anthropic
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      
+    ports:
+      # FastAPI
+      - "8000:8000"
+      # Jupyter Lab
+      - "8888:8888"
+      # TensorBoard
+      - "6006:6006"
+      # MLflow
+      - "5000:5000"
+      # Streamlit (if needed)
+      - "8501:8501"
+      
+    networks:
+      - spt-network
+      
+    depends_on:
+      - db
+      - redis
+      
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      
+    # Enable GPU support
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    
+    stdin_open: true
+    tty: true
+    
+    # Override the default command to keep container running
+    command: /bin/zsh
+
+  # PostgreSQL database (same as production but with dev data)
+  db:
+    image: postgres:15-alpine
+    container_name: spt-db-dev
+    environment:
+      POSTGRES_DB: spt_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - spt-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and task queue
+  redis:
+    image: redis:7-alpine
+    container_name: spt-redis-dev
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data_dev:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - spt-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: Jupyter Lab standalone service
+  jupyter:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: spt-jupyter
+    profiles:
+      - jupyter
+    volumes:
+      - .:/home/developer/workspace:cached
+      - jupyter_notebooks:/home/developer/workspace/notebooks
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    ports:
+      - "8889:8888"
+    networks:
+      - spt-network
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+
+  # Optional: MLflow tracking server
+  mlflow:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: spt-mlflow
+    profiles:
+      - ml
+    volumes:
+      - mlflow_data:/home/developer/mlflow
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://postgres:postgres@db:5432/mlflow
+      MLFLOW_DEFAULT_ARTIFACT_ROOT: /home/developer/mlflow/artifacts
+    ports:
+      - "5000:5000"
+    networks:
+      - spt-network
+    depends_on:
+      - db
+    command: mlflow server --host 0.0.0.0 --port 5000
+
+  # Optional: TensorBoard
+  tensorboard:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    container_name: spt-tensorboard
+    profiles:
+      - ml
+    volumes:
+      - ./runs:/home/developer/runs:ro
+    ports:
+      - "6006:6006"
+    networks:
+      - spt-network
+    command: tensorboard --logdir=/home/developer/runs --host=0.0.0.0
+
+volumes:
+  # Development volumes
+  postgres_data_dev:
+  redis_data_dev:
+  python_packages:
+  conda_packages:
+  torch_cache:
+  huggingface_cache:
+  zsh_history:
+  vscode_server:
+  jupyter_config:
+  jupyter_notebooks:
+  mlflow_data:
+
+networks:
+  spt-network:
+    driver: bridge
