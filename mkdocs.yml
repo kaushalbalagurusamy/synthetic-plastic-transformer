@@ -131,43 +131,11 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - Home: index.md
-  - Getting Started:
-    - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quickstart.md
-    - Configuration: getting-started/configuration.md
-  - User Guide:
-    - Overview: user-guide/overview.md
-    - Material Discovery: user-guide/material-discovery.md
-    - Model Training: user-guide/training.md
-    - Evaluation: user-guide/evaluation.md
-    - API Usage: user-guide/api.md
-  - Architecture:
-    - System Design: architecture/system-design.md
-    - Graph Neural Networks: architecture/gnn.md
-    - Quantum Descriptors: architecture/quantum.md
-    - Transfer Learning: architecture/transfer-learning.md
-  - Data:
-    - Datasets: data/datasets.md
-    - Natural Fibers: data/natural-fibers.md
-    - GOTS Compliance: data/gots-compliance.md
-  - API Reference:
-    - Core Models: api/models.md
-    - Data Utilities: api/data.md
-    - Preprocessing: api/preprocessing.md
-    - Utils: api/utils.md
+  - Architecture Decision Records:
+    - ADR 0001 - GNN & Transfer Learning: adr/0001-gnn-and-transfer-learning-strategy.md
+    - ADR 0002 - Multi-Objective Optimization: adr/0002-multi-objective-fiber-blend-optimization.md
+    - ADR 0003 - GOTS Compliance Engine: adr/0003-gots-compliance-and-chemical-restriction-engine.md
+    - ADR 0004 - Materials Database & Async Pipeline: adr/0004-materials-database-and-async-pipeline.md
   - Development:
-    - Contributing: development/contributing.md
-    - Development Setup: development/setup.md
-    - Testing: development/testing.md
-    - Code Style: development/code-style.md
-  - Deployment:
-    - Docker: deployment/docker.md
-    - Production: deployment/production.md
-    - Monitoring: deployment/monitoring.md
-  - Tutorials:
-    - Basic Usage: tutorials/basic-usage.md
-    - Advanced Features: tutorials/advanced-features.md
-    - Custom Models: tutorials/custom-models.md
-  - FAQ: faq.md
-  - Changelog: changelog.md 
+    - Docker Environment: DOCKER_DEVELOPMENT.md
+ 
