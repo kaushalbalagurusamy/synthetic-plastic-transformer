@@ -1,5 +1,8 @@
 # Synthetic Plastic Transformer
 
+[![CI](https://github.com/kaushalbalagurusamy/synthetic-plastic-transformer/actions/workflows/ci.yml/badge.svg)](https://github.com/kaushalbalagurusamy/synthetic-plastic-transformer/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Materials informatics toolkit and dataset pipeline for evaluating and modeling bio-based organic natural fiber alternatives to synthetic polymers, complete with Global Organic Textile Standard (GOTS v7.0) compliance validation.
 
 ---
