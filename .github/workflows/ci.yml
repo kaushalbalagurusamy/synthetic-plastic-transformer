@@ -54,7 +54,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install numpy pandas scikit-learn transformers einops pytest pytest-cov pytest-asyncio
+          pip install rdkit numpy pandas scikit-learn transformers einops pytest pytest-cov pytest-asyncio
           pip install -e . --no-deps
 
       - name: Run unit tests
