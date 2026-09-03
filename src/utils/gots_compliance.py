@@ -185,8 +185,12 @@ class GOTSComplianceChecker:
         Returns:
             Tuple of (is_compliant, reason)
         """
-        # Calculate total organic content
-        organic_content = sum(fiber_composition.values())
+        # Calculate total organic content (exclude synthetic and non-organic fibers)
+        non_organic_keywords = ('synthetic', 'polyester', 'nylon', 'acrylic', 'polypropylene', 'non_organic')
+        organic_content = sum(
+            v for k, v in fiber_composition.items()
+            if not any(kw in k.lower() for kw in non_organic_keywords)
+        )
         
         if label_grade == "organic":
             min_content = self.limits.MIN_ORGANIC_CONTENT_FULL
@@ -231,17 +235,12 @@ class GOTSComplianceChecker:
     
     def check_full_compliance(self, recommendation: Dict) -> Dict[str, Tuple[bool, str]]:
         """
-        Perform comprehensive GOTS compliance check.
+        Perform complete GOTS compliance check on a recommendation.
         
         Args:
-            recommendation: Dict containing:
-                - fiber_composition: Dict[str, float]
-                - processing_temp: float
-                - chemicals: List[str]
-                - water_consumption: float
-                - energy_consumption: float
-                - label_grade: str
-                
+            recommendation: Dict containing fiber composition, processing temp,
+                          chemicals, water, and energy consumption
+                          
         Returns:
             Dict mapping check names to (is_compliant, reason) tuples
         """
@@ -311,15 +310,16 @@ class GOTSComplianceChecker:
         
         for check_name, (is_compliant, reason) in results.items():
             if not is_compliant:
-                if 'temperature' in reason:
+                reason_lower = reason.lower()
+                if 'temperature' in reason_lower:
                     suggestions.append("Reduce processing temperature or change fiber composition")
-                elif 'chemical' in reason:
+                if 'chemical' in reason_lower or 'chemical' in check_name:
                     suggestions.append("Replace non-approved chemicals with GOTS-approved alternatives")
-                elif 'organic content' in reason:
+                if 'organic content' in reason_lower or 'organic_content' in check_name:
                     suggestions.append("Increase organic fiber content")
-                elif 'water' in reason:
+                if 'water' in reason_lower:
                     suggestions.append("Optimize process to reduce water consumption")
-                elif 'energy' in reason:
+                if 'energy' in reason_lower:
                     suggestions.append("Implement energy-efficient processing methods")
                     
         return suggestions
