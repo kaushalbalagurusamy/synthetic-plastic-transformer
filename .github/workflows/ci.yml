@@ -25,9 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
           pip install flake8 mypy isort
-          pip install -r requirements.txt
 
       - name: Lint with flake8
         run: |
@@ -61,9 +59,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install --no-build-isolation -r requirements.txt || pip install -r requirements.txt --no-deps
           pip install pytest pytest-cov pytest-asyncio
-          pip install -r requirements.txt
-          pip install -e .
+          pip install -e . --no-deps
 
       - name: Run unit tests
         run: |
