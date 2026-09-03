@@ -58,5 +58,7 @@ jobs:
           pip install -e . --no-deps
 
       - name: Run unit tests
+        env:
+          PYTHONPATH: src
         run: |
           pytest tests/unit/ -v --tb=short
