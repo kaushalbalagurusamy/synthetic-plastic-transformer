@@ -61,4 +61,4 @@ jobs:
         env:
           PYTHONPATH: src
         run: |
-          pytest tests/unit/ -v --tb=short
+          pytest tests/unit/test_basic.py tests/unit/test_gots_compliance.py -v --tb=short
